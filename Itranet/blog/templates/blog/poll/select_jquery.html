@@ -1,0 +1,30 @@
+
+<script type="text/javascript">
+	function select(value_id, poll_id) {
+
+		var url = "{% url 'blog:select' value_id=666846846854 poll_id=645653631654631453 %}".replace("666846846854", value_id).replace("645653631654631453", poll_id);
+
+		payload = {
+			"csrfmiddlewaretoken": "{{ csrf_token }}",
+		    "poll_id": poll_id,
+		    "value_id": value_id,
+		};
+		$.ajax({
+			type: 'POST',
+			dataType: "json",
+			url: url,
+			timeout: 5000,
+			data: payload,
+			success: function(data) {
+				console.log("SUCCESS", data['response'])
+			},
+			error: function(data) {
+				console.error("ERROR...", data['response'])
+			},
+			complete: function(data){
+				console.log("[+] Success")
+				location.reload()
+			}
+		});
+	}
+</script>

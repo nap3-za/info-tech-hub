@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Questions
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+  {% if questions %}
+
+    <header class="py-5">
+        <div class="container px-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-12 col-xxl-12">
+                    <div class="text-center">
+                        <h1 class="fw-bolder mb-3">Questions you've asked us</h1>
+                        <a class="btn btn-primary btn-lg" href="{% url 'nomad:send_question' %}">Ask</a>
+                        <a class="btn btn-primary btn-lg" href="{% url 'nomad:clear_questions' %}">Clear questions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="row mb-5 pb-5 pt-3 justify-content-center">
+      {% for question in questions %}
+      <div class="col-12 col-lg-4 mb-1">
+        <div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm pb-2 pt-2 mb-1">
+          <div class="app-card-header pt-1 px-2 pb-1 border-bottom-0">
+            <div class="row align-items-center">
+              <div class="col-auto">
+              <small class="tillium text-decoration-underline">{{ question.question }} ??</small>
+              </div><!--//col-->
+            </div><!--//row-->
+          </div><!--//app-card-header-->
+          <div class="app-card-body px-4">
+            <div class="intro">{% if question.is_answered %}<div class="border-start px-2"><span class="noto-sans p bold">{{ question.answer|linebreaksbr }}</span></div>{% else %}Not yet answered , come back later{% endif %}</div>
+          </div><!--//app-card-body-->
+        
+          <div class="app-card-footer p-4 mb-1">
+          {% if question.is_answered %}
+            <a class="btn" href="#" onclick="feedbackReview('{{ question.id }}', 'like')" id=""><span class="material-icons">thumb_up</span></a>
+            <a class="btn" href="#" onclick="feedbackReview('{{ question.id }}','dislike')" ><span class="material-icons">thumb_down</span></a>
+          {% endif %}
+            <a class="btn" href="{% url 'nomad:question_del' question_id=question.id %}"><span class="material-icons">delete</span></a>
+          </div><!--//app-card-footer-->
+        
+        </div><!--//app-card-->
+      </div><!--//col-->
+
+
+      {% endfor %}
+    </div>
+
+  {% else %}
+
+    <header class="py-5">
+        <div class="container px-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-12 col-xxl-12">
+                    <div class="text-center">
+                        <h1 class="fw-bolder mb-3">Nothing to see here</h1>
+                        <a class="btn btn-primary btn-lg" href="{% url 'nomad:send_question' %}">Ask a question</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header> 
+
+  {% endif %}
+</div>
+
+<script type="text/javascript">
+  function feedbackReview(id,func) {
+    alert("Thanks fo your feedback")
+    if (func == "like") {
+      location = "{% url 'nomad:question_del' question_id=23433234 %}?func=like".replace("23433234",id)
+    }
+    else if (func == "dislike") {
+      location = "{% url 'nomad:question_del' question_id=23433234 %}?func=dislike".replace("23433234",id)
+    }
+    else {
+      location = "{% url 'nomad:question_del' question_id=23433234 %}".replace("23433234",id)
+    }
+    
+    // body...
+  }
+</script>
+
+{% endblock content %} 

@@ -1,0 +1,472 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Feed
+{% endblock %}
+
+{% block content %}
+
+<style type="text/css">
+  .bg-classic {
+      background-color: #061b44;
+  }
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+  font-size: 3.5rem;
+    }
+  }
+  .image-container{
+    max-width: 70px;
+    height: auto;
+  }
+    .pp-image {
+        width: 35px;
+        height: 35px;
+        margin: 7px 10px 7px 7px;
+    }
+    .ml-3 {
+        margin-left: 12px;
+    }
+    .font-size-m {
+        font-size: 25px;
+    }
+
+  .b-example-divider {
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  }
+
+  .bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+  }
+
+  .feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    color: #fff;
+    border-radius: .75rem;
+  }
+
+  .icon-link {
+    display: inline-flex;
+    align-items: center;
+  }
+  .icon-link > .bi {
+    margin-top: .125rem;
+    margin-left: .125rem;
+    transition: transform .25s ease-in-out;
+    fill: currentColor;
+  }
+  .icon-link:hover > .bi {
+    transform: translate(.25rem);
+  }
+
+  .icon-square {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    border-radius: .75rem;
+  }
+
+  .rounded-4 { border-radius: .5rem; }
+  .rounded-5 { border-radius: 1rem; }
+
+  .text-shadow-1 { text-shadow: 0 .125rem .25rem rgba(0, 0, 0, .25); }
+  .text-shadow-2 { text-shadow: 0 .25rem .5rem rgba(0, 0, 0, .25); }
+  .text-shadow-3 { text-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .25); }
+
+  .card-cover {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+  }
+
+  .b-example-divider {
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  }
+
+</style>
+
+<div class="container-fluid">
+  <div class="pt-1 p-md-3 p-sm-0 m-sm-0">
+    <div class="container-fluid mb-0 m-sm-0">
+      <div class="col-12">
+        <form class="row align-items-center" onsubmit="executePostQuery();">
+          <div class="col-12">
+            <div class="input-group">
+              <input type="text" id="id_search_post" name="search" class="form-control " placeholder="Search posts and polls">
+              <button type="submit" class="btn input-group-append"><span class="material-icons">search</span></button>
+          </div>
+        </form>
+      </div><!--//col-->
+      <div class="row mb-2 mt-2 p-0">
+        <div type="button" class="col-6 justify-content-center   border border-dark rounded p-0"  data-bs-toggle="modal" data-bs-target="#filterBackdropLive">
+          <center><button class="btn"><span class="material-icons">tune</span></button></center>
+          <div class="modal fade" id="filterBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="filterBackdropLiveLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="filterBackdropLiveLabel">Filter</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-auto">
+                      <select class="form-select w-auto">
+                        <option selected="" value="option-1">Type</option>
+                        <option value="Posts">Posts</option>
+                        <option value="Polls">Polls</option>                    
+                      </select>
+                    </div>
+
+                    <div class="col-auto">
+                        
+                        <select class="form-select w-auto">
+                          <option selected="" value="option-1">Category</option>
+                          <option value="Operating Systems">Operating Systems</option>
+                          <option value="School">School</option>
+                          <option value="Hardware">Hardware</option>
+                          <option value="Programming">Programming</option>
+                          <option value="General">General</option>
+                        </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Go !!</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-6 justify-content-center border border-dark rounded p-0">
+          <select name="type" id="id_type" class="form-select">
+          <option value="recent" selected>recent</option>
+          <option value="random">random</option>
+          </select>
+        </div>
+        </div>
+      <main>
+
+        {% include 'blog/snippets/featured.html' %}
+      </main>
+
+      <div class="row align-items-center justify-content-between">
+
+        <div class="col-auto col-sm-12 mb-2 mt-2">
+          <div class="">
+            <div class="row justify-content-between justify-content-md-between align-items-center">
+
+
+              <!-- Filter modal -->
+
+            </div><!--//row-->
+          </div><!--//table-utilities-->
+        </div><!--//col-auto-->
+      </div><!--//row-->
+      <div class="row g-4">
+        <div class="col-6 col-md-4 col-xl-3 col-xxl-2 col-sm-12">
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
+
+
+
+{% if contents %}
+<div class="m-lg-5 mt-0 mb-0 m-sm-0 p-sm-0 list rounded border p-lg-1">
+  {% for piece in contents %}
+    {% if piece.0.author == request.user or piece.2 or piece.visibility == "Public" %}
+      {% if piece.0.kind == "Poll" %}
+        <div class="border-bottom border-dark">
+          <div class="container" id="hanging-icons">
+            <div class="row row-cols-1 row-cols-lg-1">
+              <div class="col d-flex align-items-start">
+                
+                <div class="flex-grow-1">
+                  <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-start">
+                      <a class="text-decoration-none" href="{% url 'blog:poll' poll_id=piece.0.poll.id %}"><h2 class="tauri">{{ piece.0.title }}</h2></a>
+                    </div>
+                    {% for value in piece.3 %}
+                    <div class="list-group-item list-group-item-action list-group-item-light"  onclick="triggerSelect({{value.id}}, {{ piece.0.poll.id}});">
+                        <span class="text-black">{{ value.value }}</span>&nbsp;&nbsp;&nbsp;
+                        <span>( {{ value.votes.all|length }} )</span>
+                    </div>
+                    {% endfor %}
+                  </div> 
+                  <div class="">
+                    {% include 'blog/snippets/interaction.html' %}
+                  </div>
+                  <div class="d-flex flex-row">
+                    <div class="flex-grow-1">
+                      <a href="{% url 'account:details' subject_username=piece.0.author.username %}" class="text-light font-weight-bold mb-0">
+                      {% if piece.0.author.profile_image %}
+                      <img class="pp-image border border-dark rounded rounded-circle" src="{{ piece.0.author.profile_image.url }}" alt="profile image" /><small>{% if piece.1 %}You{% else %}{{ piece.0.author }}{% endif %}</small></a>
+                      {% endif %}
+                      <small class="text-muted text-light tillium">{{ piece.0.timestamp.date }}</small>
+                    </div>
+                    <div class="d-flex flex-shrink-1">
+                      <div class="icon-square bg-light text-dark ">
+                        <button class="btn border" type="button"><span class="material-icons">settings</span></button>
+                      </div>
+                    </div>
+                  </div>                   
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      {% elif piece.0.kind == "Post" %}
+        <div class="container  border-bottom  border-dark" id="hanging-icons">
+          <div class="row row-cols-1 row-cols-lg-1">
+            <div class="col d-flex align-items-start">
+              
+              <div class="flex-grow-1 ">
+
+
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 text-start">
+                    {% if piece.0.title %}<h2 class="tauri">{{ piece.0.title }}</h2>{% endif %}
+                  </div>
+                  <p class="noto-sans">{{ piece.0.post.text|truncatechars:250 }}</p>
+                </div>
+                
+                <a href="{% url 'blog:post' post_id=piece.0.post.id %}" class="text-blue"><p class="">Continue reading</p></a>
+                <div class="">
+                  {% include 'blog/snippets/interaction.html' %}
+                </div>
+                <div class="d-flex flex-row">
+                  <div class="flex-grow-1">
+                    <a href="{% url 'account:details' subject_username=piece.0.author.username %}" class="text-light font-weight-bold mb-0">
+                    {% if piece.0.author.profile_image %}
+                    <img class="pp-image border border-dark rounded rounded-circle" src="{{ piece.0.author.profile_image.url }}" alt="profile image" /><small>{% if piece.1 %}You{% else %}{{ piece.0.author }}{% endif %}</small></a>
+                    {% endif %}
+                    <small class="text-muted text-light tillium">{{ piece.0.timestamp.date }}</small>
+                  </div>
+                  <div class="d-flex flex-shrink-1">
+                    <div class="icon-square bg-light text-dark ">
+                      <button class="btn border" type="button"><span class="material-icons">settings</span></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% elif piece.0.kind == "Snippet" %}
+        <div class="container  border-bottom  border-dark" id="">
+          <div class="row  row-cols-1 row-cols-lg-1">
+            <div class="col d-flex align-items-start">
+              
+              <div class="flex-grow-1 ">
+
+
+                <div class="row">
+                  <div class="col-12 text-start">
+                    <a href="{% url 'blog:snippet' snippet_id=piece.0.snippet.id %}" class="text-decoration-none">
+                    <p class="display-5 text-black text-center tauri">
+                    {{ piece.0.text|truncatechars:250 }}{% if piece.0.snippet.is_question %}&nbsp;??{% endif %}
+                    </p>
+                    </a>
+                  </div>
+                </div>
+                <div class="">
+                  {% include 'blog/snippets/interaction.html' %}
+                </div>
+                <div class="d-flex flex-row">
+                  <div class="flex-grow-1">
+                    <a href="{% url 'account:details' subject_username=piece.0.author.username %}" class="text-light font-weight-bold mb-0">
+                    {% if piece.0.author.profile_image %}
+                    <img class="pp-image border border-dark rounded rounded-circle" src="{{ piece.0.author.profile_image.url }}" alt="profile image" /><small>{% if piece.1 %}You{% else %}{{ piece.0.author }}{% endif %}</small></a>
+                    {% endif %}
+                    <small class="text-muted text-light tillium">{{ piece.0.timestamp.date }}</small>
+                  </div>
+                  <div class="d-flex flex-shrink-1">
+                    <div class="icon-square bg-light text-dark ">
+                      <button class="btn border" type="button"><span class="material-icons">settings</span></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  <p class="text-center">
+    {% if contents.has_previous %}
+      <button class="btn btn-primary"><a class="text-light" href="?page={{ contents.previous_page_number }}">&laquo; Previous</a></button>
+    {% endif %}
+    <small class="tillium bold m-2 text-light">Page {{ contents.number }} of {{ contents.paginator.num_pages }}</small>
+    {% if contents.has_next %}
+      <button class="btn btn-primary m-2"><a class="text-light" href="?page={{ contents.next_page_number }}">Next &raquo;</a></button><br>
+    {% endif %}
+  </p> 
+{% endif %}
+
+{% include 'blog/poll/select_jquery.html' %}
+{% include 'blog/snippets/like_jquery.html' %}
+<script type="text/javascript">
+
+
+    function triggerSelect(value_id, poll_id) {
+      select(value_id, poll_id);
+    }
+
+    function triggerLike(content_id, func, like_origin) {
+      like(content_id, func, like_origin)
+    }
+
+    function triggerDisLike(content_id, func, like_origin) {
+      like(content_id, func, like_origin)
+    }
+
+  function executePostQuery() {
+    var query = ""
+    query = document.getElementById('id_search_post').value;
+    window.location.replace("{% url 'blog:search' %}?q=" + query)
+    return false
+  }
+
+
+
+  function setFeatured(content_id) {
+    var url = "{% url 'blog:set_featured' %}";
+
+    payload = {
+        "content_id": content_id,
+    };
+    $.ajax({
+      type: 'GET',
+      dataType: "json",
+      url: url,
+      timeout: 5000,
+      data: payload,
+      success: function(data) {
+        console.log("SUCCESS")
+      },
+      error: function(data) {
+        console.error("ERROR...")
+      },
+      complete: function(data){
+        createToast("Done")
+      }
+    });
+  }
+
+
+  function feedbackNoti(content) {
+    
+    // create a notification
+
+  }
+
+
+</script>
+
+
+<div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
+
+    <strong class="me-auto">Bootstrap</strong>
+    <small class="text-muted">11 mins ago</small>
+    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div class="toast-body">
+  Hello, world! This is a toast message.
+  </div>
+</div>
+
+{% endblock content %} 
+
+
+
+{% load static %}
+
+
+<style type="text/css">
+.thumbnail {
+  height: 250px;
+  width: 250px;
+}
+</style>
+{% if posts %}
+  {% for post in posts %}
+    <div class="row rounded m-1  shadow-sm border border-light">
+      <div class="p- d-flex flex-column position-static">
+        <strong class="d-inline-block mb-1 mt-1 text-light bolder">{{ post.category }}</strong>
+        <h3 class="mb-2 text-light">{{ post.title }}</h3>
+        <p class="fst-italic text-light">{{ post.content|truncatechars:250 }}</p>
+        <a href="{% url 'blog:post' post_id=post.id %}" class="link bold"><small>Continue reading</small></a>
+        <small class="mb-1 text-muted text-light">{{ post.timestamp.date }}</small>
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}
+
+
+
+
+
+
+{% if polls %}
+    {% for poll in polls %}
+        <div class="list rounded">
+        <p class="mt-3 bolder text-light ">{{ poll.title}}</p>
+            {% for value in poll.poll_values.all %}
+            {% if show_title %}
+            {% endif %}
+            <div class="list-group-item list-group-item-action list-group-item-light"  onclick="triggerSelect({{value.id}}, {{ poll.id}});">
+                <span class="text-black">{{ value.value }}</span>&nbsp;&nbsp;&nbsp;
+                <span>( {{ value.likes.all|length }} )</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% if poll.author == request.user %}
+            <p class="text-center p-2">
+            <a href="{% url 'blog:delete_poll' poll_id=poll.id %}" class="text-decoration-none text-danger"><span class="material-icons md-24 btn-block-2">delete</span></a>
+            <a href="{% url 'blog:update_poll' poll_id=poll.id %}" class="text-decoration-none text-success"><span class="material-icons md-24 btn-block-2">update</span></a>
+            </p>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<script type="text/javascript">
+    function triggerSelect(value_id, poll_id) {
+        select(value_id, poll_id);
+    }
+</script>
+{% include 'blog/poll/select.html' %}

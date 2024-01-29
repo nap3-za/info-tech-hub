@@ -1,0 +1,36 @@
+
+> Finish nomad (
+  >> feedback (
+      questions,
+      suggestions,
+    )
+)
+
+> Append Feature (
+  >> resource
+  >> news_page,
+  >> personal_blog ( users can create blogs inside itranet where the user can blog ),
+)
+
+> Update (
+  >> account
+  >> chat [
+    >>> views
+    >>> block people,
+  ]
+  >> notifiction [
+    >>> sock msg handlers for (friend requests , like milestones , view milestones , comments)
+    >>> front end to send sock msg's
+  ]
+  >> friend 
+  >> blog [
+    >>> fix non-working front end components
+    >>> more button with sockets , instead of pagination with ajax
+  ]
+)
+
+> Write Tests
+
+> Refactor
+
+> Intriquest delete view

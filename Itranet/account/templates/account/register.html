@@ -1,0 +1,156 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}
+Create an account
+{% endblock title %}
+
+{% block content %}
+
+<style type="text/css">
+		.bd-placeholder-img {
+		font-size: 1.125rem;
+		text-anchor: middle;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		user-select: none;
+	}
+	@media (min-width: 768px) {
+	.bd-placeholder-img-lg {
+	font-size: 3.5rem;
+		}
+	}
+	.image-container{
+		max-width: 75px;
+		height: auto;
+	}
+
+</style>
+
+
+<div class="container-fluid mb-5">
+
+	<header class="pt-2">
+	    <div class="container px-5">
+	        <div class="row justify-content-center">
+	            <div class="col-lg-12 col-xxl-12">
+	                <div class="text-center mt-2">
+	                    <h1 class="display-4 page-title fw-bolder text-center tillium text-decoration-underline bold pt-2">Sign up</h1>
+	                    <p class="noto-sans fw-normal mb-0 pb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</header>
+
+
+	<section class="" id="scroll-target">
+	    <div class="container px-xl-5">
+	        <div class="row align-items-center">
+	            <div class="col-lg-12">
+					<div class="image-container mx-auto mb-4">
+						<img class="d-block  img-fluid mx-auto profile-image" alt="Info Tech Hub logo" src="{% static 'logos/light.svg' %}" id="id_profile_image">
+					</div>
+					<form method="POST">
+						<div class="row justify-content-center">
+							<div class="col-lg-6 col-12">
+								{% csrf_token %}
+								<div class="form-floating my-1">
+									<input placeholder="Email"  class="form-control" type="email" name="email" maxlength="254" autofocus="" required="" id="id_email">
+									<label for="floatingInput">Email address</label>
+								</div>
+
+								<div class="form-floating my-1">
+									<input placeholder="Username"  class="form-control" type="text" name="username" maxlength="30" required="" id="id_username">
+									<label for="floatingInput">A unique username</label>
+								</div>
+
+
+								<div class="form-floating my-1">
+									<input placeholder="Name"  class="form-control" type="text" name="name" maxlength="50" required="" id="id_name">
+									<label for="floatingInput">Name</label>
+								</div>
+
+								<div class="form-floating my-1">
+									<input placeholder="Surname"  class="form-control" type="text" name="surname" maxlength="50" required="" id="id_surname">
+									<label for="floatingInput">Surname</label>
+								</div>
+
+								<div class="form-floating my-1">
+									<input placeholder="Date of birth"  class="form-control" type="date" name="dob" required="" id="id_dob">
+									<label for="floatingInput">Date of birth</label>
+								</div>
+
+							</div>
+
+							<div class="col-lg-6 col-12">
+
+												
+								<div class="input-group mb-3 p-0">
+								<span class="input-group-text">Gender</span>
+								<select name="gender" id="id_gender" class="form-select form-control ">
+									<option value="Female">Female</option>
+									<option value="Male">Male</option>
+									<option value="Other">Other</option>
+								</select>
+								</div>
+
+								<div class="input-group mb-3">
+								<span class="input-group-text">Continent</span>
+								<select name="continent" id="id_continent" class="form-select">
+									<option value="Africa">Africa</option>
+									<option value="Australia">Australia</option>
+									<option value="Asia">Asia</option>
+									<option value="Europe">Europe</option>
+									<option value="Greenland">Greenland</option>
+									<option value="North America">North America</option>
+									<option value="South America">South America</option>
+									<option value="Antarctica">Antarctica</option>
+								</select>
+								</div>
+
+								<div class="form-floating my-1">
+									<input placeholder="Password" class="form-control" type="password" name="password1" required="" id="id_password1">
+									<label for="floatingInput">Password</label>
+								</div>
+
+								<div class="form-floating mb-3">
+									<input placeholder="Confirm password"  class="form-control" type="password" name="password2"  required="" id="id_password2">
+									<label for="floatingInput">Confirm password</label>
+								</div>
+
+								<div class="form-check mb-2">
+									<input class="form-check-input" name="accept" type="checkbox" id="disabledFieldsetCheck">
+									<label class="form-check-label" for="disabledFieldsetCheck">
+									I accept to Itranet's&nbsp;<a href="{% url 'legal_docs' %}#privacy-policy" class="text-dark text-decoration-underline">privacy policies</a>&nbsp;,&nbsp;<a href="{% url 'legal_docs' %}#terms-of-use" class="text-dark text-decoration-underline">terms of use</a>&nbsp;,&nbsp;<a href="{% url 'legal_docs' %}#eua" class="text-dark text-decoration-underline">end user agreement</a>
+									</label>
+								</div>
+
+							</div>
+
+							<div class="col-12 border-top pt-3">
+
+								{% for field in form %}
+								<p>
+								{% for error in field.errors %}
+								<p style="color: red">{{ error }}</p>
+								{% endfor %}
+								</p>
+								{% endfor %}
+								{% if form.non_field_errors %}
+								<div style="color: red">
+								<p>{{form.non_field_errors}}</p>
+								</div>
+								{% endif %}
+								<p class="text-center mb-2"><button class="btn app-btn-primary btn-sm" type="submit">Sign Up</button>&nbsp; or <a class="tillium text-decoration-underline fw-bold" href="{% url 'login' %}">sign in</a></p>
+							</div>
+						</div>
+					</form>
+
+	            </div>
+	        </div>
+	    </div>
+	</section>
+</div>
+
+{% endblock %}

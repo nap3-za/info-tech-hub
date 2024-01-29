@@ -1,0 +1,891 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}
+Details
+{% endblock title %}
+
+{% block content %}
+<style type="text/css">
+
+
+
+	.bd-placeholder-img {
+		font-size: 1.125rem;
+		text-anchor: middle;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		user-select: none;
+	}
+
+	@media (min-width: 768px) {
+	.bd-placeholder-img-lg {
+	font-size: 3.5rem;
+		}
+	}
+	.image-container{
+		max-width: 70px;
+		height: auto;
+	}
+    .pp-image {
+        width: 35px;
+        height: 35px;
+        margin: 7px 10px 7px 7px;
+    }
+    .ml-3 {
+        margin-left: 12px;
+    }
+    .font-size-m {
+        font-size: 25px;
+    }
+
+
+.profile-image {
+	height: 150px;
+	width: 150px;
+}
+
+.controls {
+	padding-left: 25px;
+	padding-top: 0px;
+	margin-top: 0px;
+}
+
+.friend {
+	padding-left: 25px;
+	padding-top:  0px;
+}
+
+
+  .bg-classic {
+      background-color: #061b44;
+  }
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+  font-size: 3.5rem;
+    }
+  }
+  .image-container{
+    max-width: 70px;
+    height: auto;
+  }
+    .pp-image {
+        width: 35px;
+        height: 35px;
+        margin: 7px 10px 7px 7px;
+    }
+    .ml-3 {
+        margin-left: 12px;
+    }
+    .font-size-m {
+        font-size: 25px;
+    }
+
+.btn-github {
+	background-color: #181818;
+}
+
+.btn-stack {
+	background-color: #D79F25;
+}
+
+.btn-youtube {
+	background-color: red;
+}
+
+.btn-insta {
+	background-color: #C10968;
+}
+
+
+</style>
+
+
+
+<div class="container px-1 py-1">
+	<h1 class="app-page-title"></h1>
+    <div class="row gy-4">
+
+	    <div class="col-12 col-md-12 col-sm-12 col-xl-6 col-xxl-6"	>
+		    <div class="app-card-account p-0 m-0 px-lg-2 px-xl-2  d-flex flex-column align-items-start">
+
+
+
+
+			    <div class="app-card-body px-2 w-100">
+				    <div class="item border-bottom py-3">
+					    <div class="row justify-content-between align-items-center">
+						    <div class="col-auto">
+							    <div class="item-data"><img class="profile-image rounded-circle" src="{{ subject.profile_image.url }}" alt="Profile image"><span class="bold tillium h4 px-3">{{ subject.username }}</span></div>
+						    </div><!--//col-->
+						    <div class="col text-end">
+
+							    <div id="fr_button_container">
+							    	{% if is_self %}
+										<a class="btn text-center" href="{% url 'account:update' %}"><span class="material-icons">settings</span></a>
+									{% elif is_friend %}
+										<a class="btn btn-secondary fr-button w-50" onclick="createOrReturnPrivateChat('{{id}}')" href="#">Chat</a>
+										
+									<!-- Them to you -->
+									{% elif request_sent == 0 %}
+										<a class="btn btn-secondary" onclick='triggerAcceptFriendRequest("{{pending_fr}}")' href="#">Accept</a>
+										<a class="btn btn-secondary" id="id_cancel_{{id}}" onclick='triggerDeclineFriendRequest("{{pending_fr}}")' href="#">Decline</a>
+									<!-- You to them -->
+									{% elif request_sent == 1 %}
+										<a class="btn btn-secondary" id="id_cancel_friend_request_btn" href="#">Cancel friend request</a>
+									<!-- No request sent -->
+									{% elif request_sent == -1 %}
+										<a class="btn btn-secondary" id="id_send_friend_request_btn" href="#">Send friend request</a>
+									{% endif %}
+							    </div>
+						    </div><!--//col-->
+					    </div><!--//row-->
+				    </div><!--//item-->
+
+
+				    {% if subject.bio %}
+					<div class="item border-bottom py-3">
+					    <div class="row justify-content-center align-items-center">
+						    <div class="col-auto">
+						        <div class="item-data source-code h5">{{ subject.bio|linebreaksbr }}</div>
+						    </div><!--//col-->
+					    </div><!--//row-->
+				    </div><!--//item-->
+				    {% elif is_self %}
+					<div class="item border-bottom py-3">
+					    <div class="row justify-content-center align-items-center">
+						    <div class="col-auto">
+						        <div class="item-data source-code h5">Add A Bio</div>
+						    </div><!--//col-->
+					    </div><!--//row-->
+				    </div><!--//item-->	
+				    {% endif %}	    
+
+					<div class="item border-bottom py-3">
+					    <div class="d-flex flex-row justify-content-between align-items-center">
+						    <div class="flex-grow-1">
+							    <div class="item-label"><strong>Username</strong></div>
+						        <div class="item-data">{{ subject.username }}</div>
+						    </div><!--//col-->
+						    {% if is_friend %}
+						    <div class="flex-shrink-1">
+						    	<a class="btn btn-secondary fr-button" onclick="removeFriend('{{id}}')" href="#">Unfriend</a>
+						    </div>
+						    {% endif %}
+						    
+					    </div><!--//row-->
+				    </div><!--//item-->
+				
+					{% if subject_settings.0 or subject_settings.1 or subject_settings.2 or subject_settings.3 or subject_settings.4 %}
+						<!-- More accordin -->
+						<div class="accordion" id="accordionOne">
+							<div class="accordion-item">
+								<h4 class="accordion-header" id="headingOne">
+								<button class="accordion-button  collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+								More
+								</button>
+								</h4>
+								<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+									<div class="accordion-body">
+										
+										<!-- Personal info -->
+										{% if subject_settings.0 %}
+										<div class="item border-bottom py-3">
+											<div class="row justify-content-between align-items-center">
+												<div class="col-auto">
+													<div class="item-label"><strong>Name</strong></div>
+													<div class="item-data">{{ subject.name }}</div>
+												</div><!--//col-->
+											</div><!--//row-->
+										</div><!--//item-->
+										<div class="item border-bottom py-3">
+											<div class="row justify-content-between align-items-center">
+												<div class="col-auto">
+													<div class="item-label"><strong>Surname</strong></div>
+													<div class="item-data">{{ subject.surname }}</div>
+												</div><!--//col-->
+											</div><!--//row-->
+										</div><!--//item-->
+										{% endif %}
+
+										<!-- Email -->
+										{% if subject_settings.1 %}
+										<div class="item border-bottom py-3">
+											<div class="row justify-content-between align-items-center">
+												<div class="col-auto">
+													<div class="item-label"><strong>Email</strong></div>
+													<div class="item-data">{{ subject.email }}</div>
+												</div><!--//col-->
+											</div><!--//row-->
+										</div><!--//item-->
+										{% endif %}
+
+										<!-- Phone number -->
+										{% if subject_settings.2 %}
+										<div class="item border-bottom py-3">
+											<div class="row justify-content-between align-items-center">
+												<div class="col-auto">
+													<div class="item-label"><strong>Phone number</strong></div>
+													<div class="item-data">{{ subject.phone_no }}</div>
+												</div><!--//col-->
+											</div><!--//row-->
+										</div><!--//item-->
+										{% endif %}
+
+										<!-- Province -->
+										{% if subject_settings.3 %}
+										<div class="item border-bottom py-3">
+											<div class="row justify-content-between align-items-center">
+												<div class="col-auto">
+													<div class="item-label"><strong>Province</strong></div>
+													<div class="item-data">{{ subject.province }}</div>
+												</div><!--//col-->
+											</div><!--//row-->
+										</div><!--//item-->
+										{% endif %}
+
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+ 					
+					{% if subject_settings.5 %}
+
+				    <div class="item border-bottom py-3">
+					    <div class="row justify-content-between align-items-center">
+						    <div class="col-auto">
+						        <div class="item-label"><strong>Friends</strong></div>
+						        <div class="item-data">{{ friends|length }} friend/s</div>
+
+						    </div><!--//col-->
+						    <div class="col-auto text-end">
+						    	<a class="" href="{% url 'friend:friend_list' user_id=subject.id %}"><button class="btn app-btn-secondary">See friends</button></a>
+						    </div>
+					    </div><!--//row-->
+				    </div><!--//item-->
+
+					{% endif %}
+
+
+					{% if is_self and q_count %}
+
+				    <div class="item border-bottom py-3">
+					    <div class="row justify-content-between align-items-center">
+						    <div class="col-auto">
+						        <div class="item-label"><strong>Questions you've asked us</strong></div>
+						        <div class="item-data">{{ q_count }} questions</div>
+
+						    </div><!--//col-->
+						    <div class="col-auto text-end">
+						    	<a class="" href="{% url 'nomad:questions' %}"><button class="btn app-btn-secondary">See questions</button></a>
+						    </div>
+					    </div><!--//row-->
+				    </div><!--//item-->
+
+					{% endif %}
+
+
+					{% if is_self and fr_count >= 1 %}
+
+				    <div class="item border-bottom py-3">
+					    <div class="row justify-content-between align-items-center">
+						    <div class="col-auto">
+						        <div class="item-label"><strong>Friend requests</strong></div>
+						        <div class="item-data" id="fr_count">{{ fr_count }} friend requests</div>
+
+						    </div><!--//col-->
+						    <div class="col-auto text-end">
+						    	<a class="" href="{% url 'friend:friend_requests' user_id=subject.id %}"><button class="btn app-btn-secondary">See friend requests</button></a>
+						    </div>
+					    </div><!--//row-->
+				    </div><!--//item-->
+
+					{% endif %}
+
+
+
+			    </div><!--//app-card-body-->
+
+  			</div>	
+  		</div>
+
+		<div class="col-12 col-md-12 col-sm-12 col-xl-6 col-xxl-6">
+			<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+				<div class="d-flex flex-row">
+					{% if has_social_links or is_self %}
+					<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active btn app-btn-secondary flex-fill mx-1" aria-current="true" aria-label="Slide 1">Social Links</button>
+					{% endif %}
+
+					{% if subject.featured or is_self %}
+					<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2" class="btn app-btn-secondary flex-fill mx-1" >Featured</button>
+					{% endif %}
+
+					{% if recent_act or is_self %}
+					<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3" class="btn app-btn-secondary flex-fill mx-1">Recent Activity</button>
+					{% endif %}
+
+					<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4" class="btn app-btn-secondary flex-fill mx-1">Hello World!</button>
+				</div>
+
+				<div class="carousel-inner">
+
+					{% if has_social_links %}
+						<div class="carousel-item active">
+							<div class="border-start py-2 w-100">
+								{% if subject.github != None %}
+									<div class="item px-3 mx-3 my-2 mt-1 py-2 border-bottom">
+										<div class="d-flex flex-row flex-nowrap">
+											<div class="flex-grow-1 btn btn-github">
+												<a class="text-light" href="{{ subject.github }}">Github</a>
+											</div>
+										</div><!--//row-->
+									</div>
+								{% endif %}
+
+								{% if subject.stack != None %}
+									<div class="item px-3 mx-3 my-2  mt-1 py-2 border-bottom">
+										<div class="d-flex flex-row flex-nowrap">
+											<div class="flex-grow-1 btn btn-stack">
+												<a class="text-light" href="{{ subject.stack }}">Stackoverflow</a>
+											</div>
+										</div><!--//row-->
+									</div>
+								{% endif %}
+
+								{% if subject.youtube != None %}
+									<div class="item px-3 mx-3 mt-1 my-2  py-2 border-bottom">
+										<div class="d-flex flex-row flex-nowrap">
+											<div class="flex-grow-1 btn btn-youtube">
+												<a class="text-light" href="{{ subject.youtube }}">YouTube channel</a>
+											</div>
+										</div><!--//row-->
+									</div>
+								{% endif %}
+
+								{% if subject.insta != None %}
+									<div class="item px-3 mx-3 mt-1 my-2  py-2 border-bottom">
+										<div class="d-flex flex-row flex-nowrap">
+											<div class="flex-grow-1 btn btn-insta">
+												<a class="text-light" href="">Instagram</a>
+											</div>
+										</div><!--//row-->
+									</div>
+								{% endif %}
+							</div>
+						</div>
+					{% elif not has_social_links and is_self %}
+						<div class="carousel-item active">
+							<div class="border-start py-2 w-100 my-2  shadow-lg bg-light" >
+								<p class="noto-sans h3 text-center p-4 my-5">Add some social links so that people can follow you on onther platforms</p>
+							</div>
+						</div>
+					{% endif %}
+
+					{% if subject.featured %}
+						<div class="carousel-item py-3">
+							{% if featured.0.kind == "Poll" %}
+								<div class="border-bottom border-dark">
+									<div class="container" id="hanging-icons">
+										<div class="row row-cols-1 row-cols-lg-1">
+											<div class="col d-flex align-items-start">
+												<div class="flex-grow-1">
+													<div class="row">
+														<div class="col-lg-12 col-md-12 col-sm-12 text-start">
+															<a class="text-decoration-none" href="{% url 'blog:poll' poll_id=featured.0.poll.id %}"><h2 class="tauri">{{ featured.0.title }}</h2></a>
+														</div>
+														{% for value in featured.1 %}
+															<div class="list-group-item list-group-item-action list-group-item-light"  onclick="triggerSelect({{value.id}}, {{ featured.0.poll.id}});">
+																<span class="text-black">{{ value.value }}</span>&nbsp;&nbsp;&nbsp;
+																<span>( {{ value.votes.all|length }} )</span>
+															</div>
+														{% endfor %}
+													</div> 
+													<div class="d-flex flex-row">
+														<div class="flex-grow-1">
+															<small class="text-muted text-light tillium">{{ featured.0.timestamp.date }}</small>
+														</div>
+														<div class="d-flex flex-shrink-1">
+															<div class="icon-square bg-light text-dark ">
+																<button class="btn border" type="button"><span class="material-icons">settings</span></button>
+															</div>
+														</div>
+													</div>                   
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{% elif featured.0.kind == "Post" %}
+								<div class="container  border-bottom  border-dark" id="hanging-icons">
+									<div class="row row-cols-1 row-cols-lg-1">
+										<div class="col d-flex align-items-start">
+											<div class="flex-grow-1 ">
+											
+												<div class="row">
+													<div class="col-lg-12 col-md-12 col-sm-12 text-start">
+													{% if featured.0.title %}<h2 class="tauri">{{ featured.0.title }}</h2>{% endif %}
+													</div>
+													<p class="noto-sans">{{ featured.0.post.text|truncatechars:250 }}</p>
+												</div>
+
+												<a href="{% url 'blog:post' post_id=featured.0.post.id %}" class="text-blue"><p class="">Continue reading</p></a>
+
+												<div class="d-flex flex-row">
+													<div class="flex-grow-1">
+														
+														<small class="text-muted text-light tillium">{{ featured.0.timestamp.date }}</small>
+													</div>
+													<div class="d-flex flex-shrink-1">
+														<div class="icon-square bg-light text-dark ">
+														<button class="btn border" type="button"><span class="material-icons">settings</span></button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{% elif featured.0.kind == "Snippet" %}
+								<div class="container  border-bottom  border-dark" id="">
+									<div class="row  row-cols-1 row-cols-lg-1">
+										<div class="col d-flex align-items-start">
+											<div class="flex-grow-1 ">
+												<div class="row">
+													<div class="col-12 text-start">
+														<a href="{% url 'blog:snippet' snippet_id=featured.0.snippet.id %}" class="text-decoration-none">
+														<p class="display-5 text-black text-center tauri">
+														{{ featured.0.text|truncatechars:250 }}{% if featured.0.snippet.is_question %}&nbsp;??{% endif %}
+														</p>
+														</a>
+													</div>
+												</div>
+
+												<div class="d-flex flex-row">
+													<div class="flex-grow-1">
+														<small class="text-muted text-light tillium">{{ featured.0.timestamp.date }}</small>
+													</div>
+													<div class="d-flex flex-shrink-1">
+														<div class="icon-square bg-light text-dark ">
+															<button class="btn border" type="button"><span class="material-icons">settings</span></button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{% endif %}
+						</div>					
+					{% elif not subject.featured and is_self %}
+						<div class="carousel-item">
+							<div class="border-start py-2 w-100 shadow-lg bg-light">
+								<p class="noto-sans h3 text-center p-4 my-5">Click the <span class="material-icons btn">star</span> icon on any post or poll to feature it on your profile page</p>
+							</div>
+						</div>
+					{% endif %}
+
+					{% if recent_act %}
+						<div class="carousel-item py-3">
+							{% if recent_act.0.kind == "Poll" %}
+								<div class="border-bottom border-dark">
+									<div class="container" id="hanging-icons">
+										<div class="row row-cols-1 row-cols-lg-1">
+											<div class="col d-flex align-items-start">
+												<div class="flex-grow-1">
+													<div class="row">
+														<div class="col-lg-12 col-md-12 col-sm-12 text-start">
+															<a class="text-decoration-none" href="{% url 'blog:poll' poll_id=recent_act.0.poll.id %}"><h2 class="tauri">{{ recent_act.0.title }}</h2></a>
+														</div>
+														{% for value in recent_act.1 %}
+															<div class="list-group-item list-group-item-action list-group-item-light"  onclick="triggerSelect({{value.id}}, {{ recent_act.0.poll.id}});">
+																<span class="text-black">{{ value.value }}</span>&nbsp;&nbsp;&nbsp;
+																<span>( {{ value.votes.all|length }} )</span>
+															</div>
+														{% endfor %}
+													</div> 
+													<div class="d-flex flex-row">
+														<div class="flex-grow-1">
+															<small class="text-muted text-light tillium">{{ recent_act.0.timestamp.date }}</small>
+														</div>
+														<div class="d-flex flex-shrink-1">
+															<div class="icon-square bg-light text-dark ">
+																<button class="btn border" type="button"><span class="material-icons">settings</span></button>
+															</div>
+														</div>
+													</div>                   
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{% elif recent_act.0.kind == "Post" %}
+								<div class="container  border-bottom  border-dark" id="hanging-icons">
+									<div class="row row-cols-1 row-cols-lg-1">
+										<div class="col d-flex align-items-start">
+											<div class="flex-grow-1 ">
+											
+												<div class="row">
+													<div class="col-lg-12 col-md-12 col-sm-12 text-start">
+													{% if recent_act.0.title %}<h2 class="tauri">{{ recent_act.0.title }}</h2>{% endif %}
+													</div>
+													<p class="noto-sans">{{ recent_act.0.post.text|truncatechars:250 }}</p>
+												</div>
+
+												<a href="{% url 'blog:post' post_id=recent_act.0.post.id %}" class="text-blue"><p class="">Continue reading</p></a>
+
+												<div class="d-flex flex-row">
+													<div class="flex-grow-1">
+														
+														<small class="text-muted text-light tillium">{{ recent_act.0.timestamp.date }}</small>
+													</div>
+													<div class="d-flex flex-shrink-1">
+														<div class="icon-square bg-light text-dark ">
+														<button class="btn border" type="button"><span class="material-icons">settings</span></button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{% elif recent_act.0.kind == "Snippet" %}
+								<div class="container  border-bottom  border-dark" id="">
+									<div class="row  row-cols-1 row-cols-lg-1">
+										<div class="col d-flex align-items-start">
+											<div class="flex-grow-1 ">
+												<div class="row">
+													<div class="col-12 text-start">
+														<a href="{% url 'blog:snippet' snippet_id=recent_act.0.snippet.id %}" class="text-decoration-none">
+														<p class="display-5 text-black text-center tauri">
+														{{ recent_act.0.text|truncatechars:250 }}{% if recent_act.0.snippet.is_question %}&nbsp;??{% endif %}
+														</p>
+														</a>
+													</div>
+												</div>
+
+												<div class="d-flex flex-row">
+													<div class="flex-grow-1">
+														<small class="text-muted text-light tillium">{{ recent_act.0.timestamp.date }}</small>
+													</div>
+													<div class="d-flex flex-shrink-1">
+														<div class="icon-square bg-light text-dark ">
+															<button class="btn border" type="button"><span class="material-icons">settings</span></button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{% endif %}
+						</div>
+					{% elif not recent_content and is_self %}
+						<div class="carousel-item">
+							<div class="border-start py-2 w-100 shadow-lg bg-light" >
+								<p class="noto-sans h3 text-center p-4 my-5">What are you waiting for ? Start sharing and posting <a href="{% url 'blog:create_post' %}"><span class="material-icons btn">create</span></a> </p>
+							</div>
+						</div>					
+					{% endif %}
+
+					<div class="carousel-item">
+						<div class="border-start py-2 w-100 my-2  shadow-lg bg-light" >
+							<p class="source-code h3 text-center p-4 my-5">(not finished)I use arch by the way</p>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+    	</div>
+    </div>
+    <div class="row mx-lg-3 mx-xl-3 mx-1 my-3">
+	{% if contents %}
+		<div class="list rounded border p-lg-1">
+			{% for piece in contents %}
+				{% if piece.0.kind == "Poll" %}
+					<div class="border-bottom border-dark">
+						<div class="container" id="hanging-icons">
+							<div class="row row-cols-1 row-cols-lg-1">
+								<div class="col d-flex align-items-start">
+									<div class="flex-grow-1">
+										<div class="row">
+											<div class="col-lg-12 col-md-12 col-sm-12 text-start">
+												<a class="text-decoration-none" href="{% url 'blog:poll' poll_id=piece.0.poll.id %}"><h2 class="tauri">{{ piece.0.title }}</h2></a>
+											</div>
+											{% for value in piece.1 %}
+												<div class="list-group-item list-group-item-action list-group-item-light"  onclick="triggerSelect({{value.id}}, {{ piece.0.poll.id}});">
+													<span class="text-black">{{ value.value }}</span>&nbsp;&nbsp;&nbsp;
+													<span>( {{ value.votes.all|length }} )</span>
+												</div>
+											{% endfor %}
+										</div> 
+										<div class="">
+											{% include 'account/snippets/interaction.html' %}
+										</div>
+										<div class="d-flex flex-row">
+											<div class="flex-grow-1">
+												<small class="text-muted text-light tillium">{{ piece.0.timestamp.date }}</small>
+											</div>
+											<div class="d-flex flex-shrink-1">
+												<div class="icon-square bg-light text-dark ">
+													<button class="btn border" type="button"><span class="material-icons">settings</span></button>
+												</div>
+											</div>
+										</div>                   
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% elif piece.0.kind == "Post" %}
+					<div class="container  border-bottom  border-dark" id="hanging-icons">
+						<div class="row row-cols-1 row-cols-lg-1">
+							<div class="col d-flex align-items-start">
+								<div class="flex-grow-1 ">
+								
+									<div class="row">
+										<div class="col-lg-12 col-md-12 col-sm-12 text-start">
+										{% if piece.0.title %}<h2 class="tauri">{{ piece.0.title }}</h2>{% endif %}
+										</div>
+										<p class="noto-sans">{{ piece.0.post.text|truncatechars:250 }}</p>
+									</div>
+
+									<a href="{% url 'blog:post' post_id=piece.0.post.id %}" class="text-blue"><p class="">Continue reading</p></a>
+									<div class="">
+										{% include 'account/snippets/interaction.html' %}
+									</div>
+									<div class="d-flex flex-row">
+										<div class="flex-grow-1">
+											
+											<small class="text-muted text-light tillium">{{ piece.0.timestamp.date }}</small>
+										</div>
+										<div class="d-flex flex-shrink-1">
+											<div class="icon-square bg-light text-dark ">
+											<button class="btn border" type="button"><span class="material-icons">settings</span></button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				{% elif piece.0.kind == "Snippet" %}
+				<div class="container  border-bottom  border-dark" id="">
+					<div class="row  row-cols-1 row-cols-lg-1">
+						<div class="col d-flex align-items-start">
+							<div class="flex-grow-1 ">
+								<div class="row">
+									<div class="col-12 text-start">
+										<a href="{% url 'blog:snippet' snippet_id=piece.0.snippet.id %}" class="text-decoration-none">
+										<p class="display-5 text-black text-center tauri">
+										{{ piece.0.text|truncatechars:250 }}{% if piece.0.snippet.is_question %}&nbsp;??{% endif %}
+										</p>
+										</a>
+									</div>
+								</div>
+								<div class="">
+									{% include 'account/snippets/interaction.html' %}
+								</div>
+								<div class="d-flex flex-row">
+									<div class="flex-grow-1">
+										<small class="text-muted text-light tillium">{{ piece.0.timestamp.date }}</small>
+									</div>
+									<div class="d-flex flex-shrink-1">
+										<div class="icon-square bg-light text-dark ">
+											<button class="btn border" type="button"><span class="material-icons">settings</span></button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+			{% endfor %}
+
+			{% comment %}
+			<p class="text-center">
+			{% if contents.has_previous %}
+			<button class="btn btn-primary"><a class="text-light" href="?page={{ contents.previous_page_number }}">&laquo; Previous</a></button>
+			{% endif %}
+			<small class="tillium bold m-2 text-light">Page {{ contents.number }} of {{ contents.paginator.num_pages }}</small>
+			{% if contents.has_next %}
+			<button class="btn btn-primary m-2"><a class="text-light" href="?page={{ contents.next_page_number }}">Next &raquo;</a></button><br>
+			{% endif %}
+			</p> 
+			{% endcomment %}
+		</div>
+	{% else %}
+	<div class="col-12 py-5 border">
+		<p class="display-3 text-center source-code text-dark">Nothing to see here</p>
+	</div>
+	{% endif %}
+    </div>
+</div>
+
+
+
+
+
+{% include 'blog/poll/select_jquery.html' %}
+{% include 'blog/snippets/like_jquery.html' %}
+<script type="text/javascript">
+
+
+    function triggerSelect(value_id, poll_id) {
+      select(value_id, poll_id);
+    }
+
+    function triggerLike(content_id, func, like_origin) {
+      like(content_id, func, like_origin)
+    }
+
+    function triggerDisLike(content_id, func, like_origin) {
+      like(content_id, func, like_origin)
+    }
+
+  function executePostQuery() {
+    var query = ""
+    query = document.getElementById('id_search_post').value;
+    window.location.replace("{% url 'blog:search' %}?q=" + query)
+    return false
+  }
+
+</script>
+
+<script type="text/javascript">
+
+	// called from base_js.html
+	//preloadImage("{{profile_image|safe}}", 'id_profile_image')
+
+	function onFriendRequestSent(){
+		location.reload();
+	}
+
+	function onFriendRequestCancelled(){
+		location.reload();
+	}
+
+	function onFriendRemoved(){
+		location.reload();
+	}
+
+	function onFriendRequestAccepted(){
+		location.reload();
+	}
+
+	function onFriendRequestDeclined(){
+		location.reload();
+	}
+
+
+	var sendFriendRequestBtn = document.getElementById("id_send_friend_request_btn")
+	if (sendFriendRequestBtn != null){
+		sendFriendRequestBtn.addEventListener("click", function(){
+			sendFriendRequest("{{id}}", onFriendRequestSent, "{{ subject.username }}")
+		})
+	}
+
+
+
+
+		// body...
+	
+	var cancelFriendRequestBtn = document.getElementById("id_cancel_friend_request_btn")
+	if(cancelFriendRequestBtn != null){
+		cancelFriendRequestBtn.addEventListener("click", function(){
+			cancelFriendRequest("{{id}}", onFriendRequestCancelled)
+		})
+	}
+
+
+
+	var removeFriendBtn = document.getElementById("id_unfriend_btn")
+	if (removeFriendBtn != null){
+		removeFriendBtn.addEventListener("click", function(){
+			removeFriend("{{id}}", onFriendRemoved)
+		})
+	}
+
+	function triggerAcceptFriendRequest(friend_request_id){
+		acceptFriendRequest(friend_request_id, onFriendRequestAccepted, "{{ subject.username }}")
+	}
+
+	function triggerDeclineFriendRequest(friend_request_id){
+		declineFriendRequest(friend_request_id, onFriendRequestDeclined)
+	}
+
+
+	function reloadRecipient(username) {
+		mainSock.send(JSON.stringify({
+			"command": "reload",
+			"recipient": username,
+		}));
+	}
+
+	// Implement the button
+    function report(reason) {
+        var url = "{% url 'report' %}";
+
+        payload = {
+            "csrfmiddlewaretoken": "{{ csrf_token }}",
+            "subject": "Account",
+            "subject_id": {{ subject.id }},
+            "reason": reason,
+        };
+        $.ajax({
+            type: 'POST',
+            dataType: "json",
+            url: url,
+            timeout: 5000,
+            data: payload,
+            success: function(data) {
+                console.log("SUCCESS")
+            },
+            error: function(data) {
+                console.error("ERROR...")
+            },
+            complete: function(data){
+                console.log(data)
+                if (data.responseJSON.response == "Successful") {
+                    alert("Report sent successfully , thank you for making Itranet a better place :)")
+                }
+                else if (data.responseJSON.response == "Inconsistent data") {
+                    location = "{% url '400' %}"
+                }
+                else if (data.responseJSON.response == "404") {
+                    location = "{% url '400' %}"
+                }
+
+            }
+        });
+    }
+
+
+</script>
+
+
+{% if is_friend %}
+	{% include 'chat/snippets/create_or_return_private_chat.html' %}
+	{% include 'friend/unfriend.html' %}
+{% endif %}
+
+{% if not is_friend and not is_self %}
+	{% include 'friend/send_jquery.html' %}
+	{% include 'friend/accept_jquery.html' %}
+	{% include 'friend/decline_jquery.html' %}
+	{% include 'friend/cancel_jquery.html' %}
+{% endif %}
+
+
+{% endblock content %}

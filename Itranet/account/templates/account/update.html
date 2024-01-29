@@ -1,0 +1,502 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}
+Edit account
+{% endblock title %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'assets/plugins/cropperjs/dist/cropper.min.css' %}">
+<style type="text/css">
+
+	.field-heading{
+		color: #737373;
+	}
+	#id_confirm{
+		color: green;
+	}
+	#id_confirm:hover {
+		opacity: 0.3;
+	}
+	#id_cancel:hover {
+		opacity: 0.3;
+	}
+	#id_cancel{
+		color: red;
+	}
+	.material-icons{
+		font-size: 30px;
+	}
+	.material-icons:hover{
+		cursor: pointer;
+	}
+
+	.bd-placeholder-img {
+		font-size: 1.125rem;
+		text-anchor: middle;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		user-select: none;
+	}
+	.textarea {
+		height: 180px;
+		max-height: 200px;
+	}
+
+	@media (min-width: 768px) {
+	.bd-placeholder-img-lg {
+	font-size: 3.5rem;
+		}
+	}
+</style>
+<div class="container px-1 py-1">
+    <div class="row gy-4">
+	    <div class="col-12 col-lg-6 col-xl-6">
+		    <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start">
+				<div class="app-card-header p-3 border-bottom-0">
+					<div class="row align-items-center gx-3">
+						<div class="col-auto">
+							<div class="app-icon-holder">
+								<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  									<path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+								</svg>
+							</div><!--//icon-holder-->
+						</div><!--//col-->
+						<div class="col-auto">
+							<h4 class="app-card-title">Settings</h4>
+						</div><!--//col-->
+					</div><!--//row-->
+				</div><!--//app-card-header-->
+				<div class="app-card-body px-4 w-100">
+					<div class="item border-bottom py-3">
+						<div class="row justify-content-between align-items-center">
+					  		<div class="mb-2" id="id_image_crop_confirm">
+					  			<span id="id_cancel" class="material-icons">cancel</span>
+					  			<span id="id_confirm" class="material-icons">check</span>
+					  		</div>
+
+					  		<div class="d-flex flex-row image-container" id="id_image_container">
+					  			<div class="flex-grow-1">
+				  					<img class="border border-dark rounded-circle img-fluid profile-image" id="id_profile_image_display" src="{{request.user.profile_image.url}}" alt="profile pic">
+				  				</div>
+
+								<div class="">
+									<div class="middle flex-shrink-1 text-end pt-3" id="id_middle_container">
+										<div class="text btn app-btn-secondary" id="id_text">update</div>
+									</div>
+								</div><!--//col-->
+
+					  		</div>
+
+						</div><!--//row-->
+					</div><!--//item-->
+					<form class="form-signin" method="post" enctype="multipart/form-data">
+						{% csrf_token %}
+						<input class="d-none" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
+
+					    <div class="item border-bottom py-3">
+							<div class="d-flex flex-row justify-content-between align-items-center ">
+								<div class="flex-grow-1">
+									<div class="item-label">
+										Biography (max is 250 characters):
+									</div>
+									<div class="item-data">
+										<textarea name="bio" aria-label="With textarea" class="form-control textarea mb-3" maxlength="250" id="id_bio" >{% if request.user.bio == None %}{% else %}{{ request.user.bio }}{% endif %}</textarea>
+									</div>
+								</div><!--//col-->
+								<div class="flex-shrink-1">
+									<button type="submit" class="btn flex-shrink-1 text-end">save</button>
+								</div>
+							</div><!--//row-->
+						</div><!--//item-->
+
+						<div class="item border-bottom py-3">
+							<div class="d-flex flex-row justify-content-between align-items-center ">
+								<div class="flex-grow-1">
+									<div class="item-data">
+										<div class="form-floating">
+											<input value="{{ request.user.username }}"  class="form-control" type="text" name="username" maxlength="255">
+											<label for="floatingInput">Username</label>
+										</div>
+									</div>
+								</div><!--//col-->
+								<div class="flex-shrink-1">
+									<button type="submit" class="btn flex-shrink-1 text-end">save</button>
+								</div>
+							</div><!--//row-->
+					    </div><!--//item-->
+					    <div class="border rounded">
+							<div class="item border-bottom py-3">
+								<div class="d-flex flex-row justify-content-between align-items-center ">
+									<div class="flex-grow-1">
+										<div class="item-data">
+											<div class="form-floating">
+												<input value="{{ request.user.name }}"  class="form-control" type="text" name="name" maxlength="30">
+												<label for="floatingInput">Name</label>
+											</div>
+										</div>
+									</div><!--//col-->
+									<div class="flex-shrink-1">
+										<button type="submit" class="btn flex-shrink-1 text-end">save</button>
+									</div>
+								</div><!--//row-->
+							</div>
+
+							<div class="item border-bottom py-3">
+								<div class="d-flex flex-row justify-content-between align-items-center ">
+									<div class="flex-grow-1">
+										<div class="item-data">
+											<div class="form-floating">
+												<input value="{{ request.user.surname }}"  class="form-control" type="text" name="surname" maxlength="30">
+												<label for="floatingInput">Surname</label>
+											</div>
+										</div>
+									</div><!--//col-->
+									<div class="flex-shrink-1">
+										<button type="submit" class="btn flex-shrink-1 text-end">save</button>
+									</div>
+								</div><!--//row-->
+							</div>
+
+						</div><!-- end border -->
+
+
+						<div class="item border-bottom py-3">
+							<div class="d-flex flex-row flex-nowrap justify-content-between align-items-center ">
+								<div class="flex-grow-1">
+									<div class="item-data">
+										<div class="form-floating">
+											<input value="{{ request.user.email }}"  class="form-control" type="email" name="email" maxlength="200">
+											<label for="floatingInput">Email</label>
+										</div>
+									</div>
+								</div><!--//col-->
+
+							</div><!--//row-->
+						</div>
+
+
+						<div class="item py-3 pb-0 mb-0">
+							<div class="d-flex flex-row flex-nowrap justify-content-between align-items-center ">
+								<div class="flex-grow-1">
+									<div class="item-data">
+										<div class="input-group mb-3">
+										<span class="input-group-text">Continent</span>
+										<select name="continent" id="id_continent" class="form-select">
+											<option value="{{ request.user.continent }}" selected="">currently : {{ request.user.continent }}</option>
+											<option value="Africa">Africa</option>
+											<option value="Australia">Australia</option>
+											<option value="Asia">Asia</option>
+											<option value="Europe">Europe</option>
+											<option value="Greenland">Greenland</option>
+											<option value="North America">North America</option>
+											<option value="South America">South America</option>
+											<option value="Antarctica">Antarctica</option>
+										</select>
+										</div>
+									</div>
+								</div><!--//col-->
+							</div><!--//row-->
+						</div>
+
+
+					<div class="d-flex flex-row flex-nowrap">
+						<button type="submit" class="btn btn-secondary flex-fill m-1">Save</button>
+
+						<a class="btn btn-secondary flex-fill m-1" href="{% url 'account:details' subject_username=request.user.username %}">Back</a>
+					</div>
+				</div><!--//app-card-body-->	   
+			</div><!--//app-card-->
+		</div>
+		<div class="col-12 col-lg-6 col-xl-6">
+			<div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start">
+				<div class="app-card-header p-3 border-bottom-0">
+					<div class="row align-items-center gx-3">
+						<div class="col-auto">
+							<div class="app-icon-holder">
+								<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  									<path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+								</svg>
+							</div><!--//icon-holder-->
+						</div><!--//col-->
+						<div class="col-auto">
+							<h4 class="app-card-title">External links (optional)</h4>
+						</div><!--//col-->
+					</div><!--//row-->
+				</div><!--//app-card-header-->
+				<div class="app-card-body px-4 w-100">
+
+					<!-- Social links -->
+					<div class="item border-bottom py-3">
+						<div class="d-flex flex-row justify-content-between align-items-center ">
+							<div class="flex-grow-1">
+								<div class="item-data">
+									<div class="form-floating">
+										<input {% if request.user.github == None %}value=""{% else %}value="{{ request.user.github }}"{% endif %}  class="form-control" type="text" name="github" maxlength="30">
+										<label for="floatingInput">Github username</label>
+									</div>
+								</div>
+							</div><!--//col-->
+							<div class="flex-shrink-1">
+								<button type="submit" class="btn flex-shrink-1 text-end">save</button>
+							</div>
+						</div><!--//row-->
+					</div><!--//item-->
+					<div class="item border-bottom py-3">
+						<div class="d-flex flex-row justify-content-between align-items-center ">
+							<div class="flex-grow-1">
+								<div class="item-data">
+									<div class="form-floating">
+										<input {% if request.user.stack == None %}value=""{% else %}value="{{ request.user.stack }}"{% endif %} class="form-control" type="text" name="stack" maxlength="30">
+										<label for="floatingInput">Stackoverflow username</label>
+									</div>
+								</div>
+							</div><!--//col-->
+							<div class="flex-shrink-1">
+								<button type="submit" class="btn flex-shrink-1 text-end">save</button>
+							</div>
+						</div><!--//row-->
+					</div><!--//item-->
+					<div class="item border-bottom py-3">
+						<div class="d-flex flex-row justify-content-between align-items-center ">
+							<div class="flex-grow-1">
+								<div class="item-data">
+									<div class="form-floating">
+										<input {% if request.user.youtube == None %}value=""{% else %}value="{{ request.user.youtube }}"{% endif %} class="form-control" type="text" name="youtube" maxlength="30">
+										<label for="floatingInput">YouTube channel</label>
+									</div>
+								</div>
+							</div><!--//col-->
+							<div class="flex-shrink-1">
+								<button type="submit" class="btn flex-shrink-1 text-end">save</button>
+							</div>
+						</div><!--//row-->
+					</div><!--//item-->
+					<div class="item border-bottom py-3">
+						<div class="d-flex flex-row justify-content-between align-items-center ">
+							<div class="flex-grow-1">
+								<div class="item-data">
+									<div class="form-floating">
+										<input {% if request.user.insta == None %}value=""{% else %}value="{{ request.user.insta }}"{% endif %} class="form-control" type="text" name="insta" maxlength="30">
+										<label for="floatingInput">Instagram account</label>
+									</div>
+								</div>
+							</div><!--//col-->
+							<div class="flex-shrink-1">
+								<button type="submit" class="btn flex-shrink-1 text-end">save</button>
+							</div>
+						</div><!--//row-->
+					</div><!--//item-->
+
+
+					<div class="d-flex flex-row flex-nowrap">
+						<button type="submit" class="btn btn-secondary flex-fill m-1">Save</button>
+
+						<a class="btn btn-secondary flex-fill m-1" href="">Back (this will lock the settings page)</a>
+					</div>
+				</div><!--//app-card-body-->
+				
+				</form>
+			    </div><!--//app-card-footer-->	   
+			</div><!--//app-card-->
+		</div>
+		{% for field in form %}
+		<p>
+		{% for error in field.errors %}
+		<p style="color: red">{{ error }}</p>
+		{% endfor %}
+		</p>
+		{% endfor %}
+		{% if form.non_field_errors %}
+		<div style="color: red">
+		<p>{{form.non_field_errors}}</p>
+		</div>
+		{% endif %}
+	</div>
+</div>
+
+<script type="text/javascript">
+
+	var cropper;
+	var imageFile;
+	var base64ImageString;
+	var cropX;
+	var cropX;
+	var cropWidth;
+	var cropHeight;
+
+	enableImageOverlay()
+
+	function enableImageOverlay(){
+		var text = document.getElementById("id_text")
+
+
+		var profileImage = document.getElementById("id_profile_image")
+		profileImage.style.opacity = "1"
+		profileImage.style.display = "block"
+		profileImage.style.width = "100%"
+		profileImage.style.height = "auto"
+		profileImage.style.transition = ".5s ease"
+		profileImage.style.backfaceVisibility  = "hidden"
+		profileImage.style.cursor = "pointer"
+
+		var middleContainer = document.getElementById("id_middle_container")
+
+
+		var imageContainer = document.getElementById("id_image_container")
+
+		imageContainer.addEventListener("click", function(event){
+			document.getElementById('id_profile_image').click();
+		});
+
+		var cropConfirm = document.getElementById("id_image_crop_confirm")
+		cropConfirm.classList.remove("d-flex")
+		cropConfirm.classList.remove("flex-row")
+		cropConfirm.classList.remove("justify-content-between")
+		cropConfirm.classList.add("d-none")
+		
+	}
+
+	function disableImageOverlay(){
+		var profileImage = document.getElementById("id_profile_image_display")
+		var middleContainer = document.getElementById("id_middle_container")
+		var imageContainer = document.getElementById("id_image_container")
+		var text = document.getElementById("id_text")
+
+		profileImage.style.opacity = "1"
+
+		document.getElementById('id_image_container').removeEventListener("click", function(event){
+			event.preventDefault();
+			// do nothing
+		});
+		document.getElementById('id_profile_image').addEventListener("click", function(event){
+			event.preventDefault();
+			// do nothing
+		});
+
+		var cropConfirm = document.getElementById("id_image_crop_confirm")
+		cropConfirm.classList.remove("d-none")
+		cropConfirm.classList.add("d-flex")
+		cropConfirm.classList.add("flex-row")
+		cropConfirm.classList.add("justify-content-between")
+
+		var confirm = document.getElementById("id_confirm")
+		confirm.addEventListener("click", function(event){
+			console.log("Sending crop data for processing...")
+			cropImage(
+				imageFile, 
+				cropX, 
+				cropY, 
+				cropWidth,
+				cropHeight
+			)
+		})
+
+		var cancel = document.getElementById("id_cancel")
+		cancel.addEventListener("click", function(event){
+			console.log("Reloading window...")
+			window.location.reload();
+		})
+	}
+
+	/* return null if invalid or base64String if valid */
+	function isImageSizeValid(image){
+		console.log("max size: {{DATA_UPLOAD_MAX_MEMORY_SIZE}}")
+		// console.log(image)
+		var startIndex = image.indexOf("base64,") + 7;
+		var base64str = image.substr(startIndex);
+		var decoded = atob(base64str);
+		console.log("FileSize: " + decoded.length);
+		if(decoded.length>= "{{DATA_UPLOAD_MAX_MEMORY_SIZE}}"){
+			return null
+		}
+		return base64str
+	}
+
+	function cropImage(image, x, y, width, height){
+		base64ImageString = isImageSizeValid(image)
+
+		if(base64ImageString != null){
+			var requestData = {
+				"csrfmiddlewaretoken": "{{ csrf_token }}",
+				"image": base64ImageString,
+				"cropX": cropX,
+				"cropY": cropY,
+				"cropWidth": cropWidth,
+				"cropHeight": cropHeight
+			}
+			$.ajax({
+				type: 'POST',
+				dataType: "json",
+				url: "{% url 'crop_image' user_id=request.user.id %}",
+				data: requestData,
+				timeout: 10000,
+				success: function(data) {
+					if(data.result == "success"){
+						document.getElementById("id_cancel").click()
+					}
+					else if(data.result == "error"){
+						alert(data.exception)
+						document.getElementById("id_cancel").click()
+					}
+				},
+				error: function(data) {
+					console.error("ERROR...", data)
+				},
+				complete: function(data){
+				}
+			});
+		}
+		else{
+			alert("Upload an image smaller than 10 MB");
+			document.getElementById("id_cancel").click()
+		}
+	}
+
+	/*
+		Called when a new image is selected from file chooser dialog
+	*/
+	function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+            	disableImageOverlay()
+            	var image = e.target.result
+            	var imageField = document.getElementById('id_profile_image_display')
+                imageField.src = image
+				cropper = new Cropper(imageField, {
+					aspectRatio: 1/1,
+					crop(event) {
+						// console.log("CROP START")
+						// console.log("x: " + event.detail.x);
+						// console.log("y: " + event.detail.y);
+						// console.log("width: " + event.detail.width);
+						// console.log("height: " + event.detail.height);
+						setImageCropProperties(
+							image,
+							event.detail.x,
+							event.detail.y,
+							event.detail.width,
+							event.detail.height
+						)
+					},
+				});
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+    function setImageCropProperties(image, x, y, width, height){
+		imageFile = image
+		cropX = x
+		cropY = y
+		cropWidth = width
+		cropHeight = height
+	}
+
+</script>
+<script type="module" src="{% static 'assets/plugins/cropperjs/dist/cropper.min.js' %}"></script>
+
+{% endblock content %}

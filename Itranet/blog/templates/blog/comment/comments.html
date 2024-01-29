@@ -1,0 +1,161 @@
+{% load static %}
+
+<div class="card-header">
+    <div class="input-group">
+        <input type="text" class="form-control border border-secondary shadow" id="id_comment_input" placeholder="Add a comment...">
+        <span class="input-group-append">
+            <button class="btn btn-secondary border rounded-right shadow" type="button" onclick="triggerAddComment(0)">Go!</button>
+        </span>
+    </div>
+</div>
+
+<div class="card-body mt-0 mb-0 p-0">
+
+<div class="">
+    {% if comments %}
+        {% for comment in comments %}
+        <div class="p-1 shadow">
+            <a href="{% url 'account:details' subject_username=comment.0.author.username %}" class="text-dark font-weight-bold mb-0 pt-2 pl-1">
+                <img class="pp-image border border-dark rounded rounded-circle" src="{{ comment.0.author.profile_image.url }}" alt="profile image" /><small>{% if comment.1 %}You{% else %}{{ comment.0.author }}{% endif %}</small></a>
+            <p class="ml-3 mb-0 bold">{{ comment.0.text }}</p>
+            <small class="text-muted ml-3" style="font-size: 13px">{{ comment.0.timestamp.date }}</small>
+            <div class="">        
+                {% if comment.1 %}
+                    <div class="shadow-sm">
+                        <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#editCollapseNo{{comment.0.id}}" aria-controls="editCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="material-icons md-18 text-success">update</span>
+                        </button>
+
+                        <a href="{% url 'blog:delete_comment' comment_id=comment.0.id content_id=content.id %}" class="text-decoration-none text-danger btn"><span class="material-icons md-18">delete</span></a>
+                        <div class="collapse p-2 border border-light" id="editCollapseNo{{comment.0.id}}" >
+                            <ul class="nav me-auto mb-2 mb-lg-0 " >
+                                <li>  
+                                    <div class="p-1">
+                                        <form method="POST" action="{% url 'blog:edit_comment' content_id=content.id comment_id=comment.0.id %}">{% csrf_token %}
+                                            <div class="input-group">
+                                                <input type="text" class="form-control border border-secondary shadow" name="content" id="id__edit_comment_input" value="{{ comment.0.text}}">
+                                                <span class="input-group-append">
+                                                    <button id="id_edit_comment_btn" class="btn btn-secondary border rounded-right shadow" type="submit">Go!</button>
+                                                </span>
+                                                <input type="hidden" id="id_comment_id" name="comment_id" value="{{ comment.0.id }}">
+                                            </div>
+                                            {% for field in form %}
+                                                <p>
+                                                {% for error in field.errors %}
+                                                    <p style="color: red">{{ error }}</p>
+                                                {% endfor %}
+                                                </p>
+                                            {% endfor %}
+                                            {% if form.non_field_errors %}
+                                                <div style="color: red">
+                                                    <p>{{ form.non_field_errors }}</p>
+                                                </div>
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="">
+                        <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#replyCollapseNo{{comment.0.id}}" aria-controls="replyCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="material-icons md-18 text-success">reply</span>
+                        </button>
+
+                        <div class="collapse p-2 border border-light" id="replyCollapseNo{{comment.0.id}}" >
+                            <div class="input-group">
+                                <input type="text" class="form-control border border-secondary shadow" id="id_reply_comment_input" placeholder="Reply...">
+                                <span class="input-group-append">
+                                    <button class="btn btn-secondary border rounded-right shadow" type="button" onclick="triggerAddReplyComment('{{comment.0.id}}')">Go!</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if comment.2 %}
+                <div class="border-top border-bottom">
+                {% for reply in comment.2 %}
+                    <div class="rounded border border-top m-5 mb-0 mt-0">
+                        
+                        <a href="{% url 'account:details' subject_username=reply.author.username %}" class="text-dark font-weight-bold mb-0 pt-2 pl-1">
+                            <img class="pp-image border border-dark rounded rounded-circle" src="{{ reply.author.profile_image.url }}" alt="profile image" /><small>{% if reply.author == request.user %}You{% else %}{{ reply.author }}{% endif %}<small class="text-muted ml-3 " style="font-size: 13px">replied to {% if comment.0.author == request.user %}me{% else %}{{ comment.0.author }}{% endif %}</small></small></a>
+                        <p class="ml-3 mb-0">{{ reply.text }}</p>
+                        <small class="text-muted ml-3" style="font-size: 13px">{{ reply.timestamp.date }}</small>
+                        <div class="">        
+                            {% if reply.author == request.user %}
+                                <div class="shadow-sm">
+                                    <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#editReplyCollapseNo{{reply.id}}" aria-controls="editReplyCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                                        <span class="material-icons md-18 text-success">update</span>
+                                    </button>
+
+                                    <a href="{% url 'blog:delete_comment' comment_id=reply.id  content_id=content.id %}" class="text-decoration-none text-danger btn"><span class="material-icons md-18">delete</span></a>
+                                    <div class="collapse p-2 border border-light" id="editReplyCollapseNo{{reply.id}}" >
+                                        <ul class="nav me-auto mb-2 mb-lg-0 " >
+                                            <li>  
+                                                <div class="p-1">
+                                                    <form method="POST" action="{% url 'blog:edit_comment' content_id=content.id comment_id=reply.id %}">{% csrf_token %}
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control border border-secondary shadow" name="content" id="id__edit_comment_input" value="{{ reply.text}}">
+                                                            <span class="input-group-append">
+                                                                <button id="id_edit_comment_btn" class="btn btn-secondary border rounded-right shadow" type="submit">Go!</button>
+                                                            </span>
+                                                            <input type="hidden" id="id_comment_id" name="comment_id" value="{{ reply.id }}">
+                                                        </div>
+                                                        {% for field in form %}
+                                                            <p>
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                            </p>
+                                                        {% endfor %}
+                                                        {% if form.non_field_errors %}
+                                                            <div style="color: red">
+                                                                <p>{{ form.non_field_errors }}</p>
+                                                            </div>
+                                                        {% endif %}
+                                                    </form>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% else %}
+                                
+                            {% endif %}
+                        </div> 
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+
+        {% endfor %}
+    {% else %}
+    <div class="card mt-3 border">
+        <div class="card-body">
+            <p>No comments , yet</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+</div> <!-- End of card body-->
+<script type="text/javascript">
+    function triggerAddComment(reply_id) {
+        var comment = "";
+        var content_id = {{ post.content.id }}
+        comment = document.getElementById('id_comment_input').value;
+        addComment(content_id, comment, reply_id);
+    }
+
+    function triggerAddReplyComment(reply_id) {
+        var comment = "";
+        var content_id = {{ post.content.id }}
+        comment = document.getElementById('id_reply_comment_input').value;
+        addComment(content_id, comment, reply_id);
+    }
+</script>
+
+{% include 'blog/comment/create_jquery.html' %}

@@ -1,0 +1,123 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+{% if request.user.is_authenticated %}
+Welcome back {{ request.user.username }}
+{% else%}
+Welcome To Itranet
+{% endif %}
+{% endblock title %}
+
+{% block content %}
+
+<style type="text/css">
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+  @media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+  font-size: 3.5rem;
+    }
+  }
+  .image-container{
+    max-width: 75px;
+    height: auto;
+  }
+</style>
+
+<div class="container-fluid">
+
+  {% if request.user.is_authenticated %}
+  <header class="bg-light border-bottom py-5 my-3">
+    <div class="container-fluid px-5 py-xl-5 my-xl-3 py-sm-3 my-sm-3 py-xs-2 my-xs-2">
+      <div class="text-center">
+        <h1 class="display-3 border-bottom border-top fw-bolder tillium">{{ welcome_msg }} {{ request.user.username }}</h1>
+        <div class="col-lg-6">
+          <p class="lead mb-4">You have <a href="{% url 'notifications:home' %}">{{ noti_count }} new notification{{ noti_count|pluralize }} </a> and <a href="{% url 'chat:chats' %}">{{ msg_count }} new message{{ msg_count|pluralize }}</a></p>
+          <div class="d-grid d-sm-flex justify-content-sm-center">
+            <a class="btn app-btn-secondary btn-sm px-4 mx-2" href="{% url 'lobby' %}">lobby</a>
+            <a class="btn btn-primary btn-sm px-4 mx-2" href="{% url 'chat:chats' %}">chats</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  {% elif not request.user.is_authenticated %}
+    <header class="bg-light mt-3">
+      <div class="container-fluid px-5">
+          <div class="row gx-5 align-items-center justify-content-center">
+              <div class="col-lg-12 col-xl-12 col-xxl-12 rounded ">
+                  <div class=" text-center text-xl-start">
+                      <h1 class="display-5 fw-bolder tillium text-dark mb-2">A Bootstrap 5 template for modern businesses</h1>
+                      <p class="lead fw-normal paduk text-dark-100 mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit!</p>
+                      <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                        <p>
+                          <a class="" href="{% url 'register' %}"><button class="btn app-btn-primary btn-sm" type="button">Sign up</button></a>
+                          <a class="" href="#login_form"><button class="btn app-btn-secondary btn-sm" type="button">Sign in</button></a>
+                        </p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </header>
+
+    <section class="bg-light py-4 my-2 px-3 mx-xl-3" id="login_form">
+      <div class="row justify-content-center border-top rounded">
+        <form method="POST" action="{% url 'login' %}" class="col-xl-6 col-sm-12 col-xs-12 col-md-8">{% csrf_token %}
+          <h1 class="h1 page-title fw-bold text-center tillium bold pt-4">Sign in :)</h1>
+          <div class="image-container mx-auto mt-2 mb-2">
+            <img class="d-block  img-fluid mx-auto profile-image" alt="Itranet logo" src="{% static 'logos/light.svg' %}" id="id_profile_image">
+          </div>
+          <div class="form-floating my-1">
+            <input placeholder="Email"  class="form-control" type="email" name="email" maxlength="254" required="" id="id_email">
+            <label for="floatingInput">Email address</label>
+          </div>
+
+          <div class="form-floating my-1">
+            <input placeholder="Password" class="form-control" type="password" name="password" required="" id="id_password">
+            <label for="floatingInput">Password</label>
+          </div>
+
+          {% for field in form %}
+          <p>
+          {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+          {% endfor %}
+          </p>
+          {% endfor %}
+          {% if form.non_field_errors %}
+          <div style="color: red">
+          <p>{{form.non_field_errors}}</p>
+          </div>
+          {% endif %}
+          
+          <p class="text-center py-2"><button class="btn app-btn-primary btn-sm mx-1" type="submit">Sign In</button><a class="" href="{% url 'password_reset' %}"><button class="btn app-btn-secondary btn-sm mx-1" type="button">Forgot my password</button></a></p>
+
+            <h6 class="fw-bold tillium text-center py-0 my-0">Don't have an account?</h6>
+                <p class="lead text-center paduk fw-normal"><a class="text-dark bold" href="{% url 'register' %}">Sign up</a> and join the community :)</p>
+        </form>
+      </div>
+
+
+    </section>
+
+  {% endif %}
+
+
+</div>
+
+{% endblock content %}
+
+
+
+
+
+
+
+

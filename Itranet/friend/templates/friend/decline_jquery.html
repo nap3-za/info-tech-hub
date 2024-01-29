@@ -1,0 +1,26 @@
+<script type="text/javascript">
+    function declineFriendRequest(friend_request_id, uiUpdateFunction) {
+        var url = "{% url 'friend:decline' friend_request_id=525613164613352032 %}".replace("525613164613352032", friend_request_id)
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: url,
+            timeout: 5000,
+            success: function (data) {
+                //                  This string should be the same one that your payload in the view is supposed to say
+                if (data.response == "Friend request declined") {
+                    console.log("Success")
+                }
+                else if (data.response != null) {
+                    console.log("Something went wrong " + data.response)
+                }
+            },
+            error: function (data) {
+                console.log("Something went wrong")
+            },
+            complete: function (data) {
+                uiUpdateFunction()
+            },            
+        })
+    }
+</script>

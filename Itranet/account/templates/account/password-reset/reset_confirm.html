@@ -1,0 +1,77 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}
+Change password
+{% endblock title %}
+
+{% block content %}
+<div class="row shadow mt-3 mb-3">
+<div class="offset-md-3 col-md-6">
+<style type="text/css">
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+    @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+        }
+    }
+    .image-container{
+        max-width: 75px;
+        height: auto;
+    }
+</style>
+
+<div class="container-fluid shadow-lg border rounded">
+<form method="POST">{% csrf_token %}
+    <h1 class="h1 page-title fw-normal text-center tillium bold pt-4">Set a new password</h1>
+    <div class="image-container mx-auto mt-2 mb-2">
+        <img class="d-block  img-fluid mx-auto profile-image" alt="Info Tech Hub logo" src="{% static 'logos/light.svg' %}" id="id_profile_image">
+    </div>
+   
+            <div class="form-floating">
+                <input placeholder="Password" class="form-control" type="password" name="new_password1" required="" id="id_password">
+                <label for="floatingInput">New password</label>
+            </div>
+            <div class="form-floating">
+                <input placeholder="Password" class="form-control" type="password" name="new_password2" required="" id="id_password">
+                <label for="floatingInput">Confirm new password</label>
+            </div>
+
+    {% for field in form %}
+    <p>
+    {% for error in field.errors %}
+    <p style="color: red">{{ error }}</p>
+    {% endfor %}
+    </p>
+    {% endfor %}
+    {% if form.non_field_errors %}
+    <div style="color: red">
+    <p>{{form.non_field_errors}}</p>
+    </div>
+    {% endif %}
+    
+    <p class="text-ctech enter"><button class="w-100 btn btn-primary mt-3 btn-md" type="submit">Reset password</button></p>
+
+
+</form>
+</div>
+
+</div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

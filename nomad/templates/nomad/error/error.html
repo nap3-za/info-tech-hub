@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ code }}
+{% endblock %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+<body class="app app-404-page">   	
+   
+    <div class="container mb-5">
+	    <div class="row">
+		    <div class="col-12 col-md-11 col-lg-7 col-xl-6 mx-auto">
+			    <div class="app-branding text-center mb-5">
+		            <a class="app-logo" href="index.html"><img class="logo-icon me-2" src="{% static 'logos/light.svg' %}" alt="logo"><span class="logo-text">ITRANET</span></a>
+	
+		        </div><!--//app-branding-->  
+			    <div class="app-card p-5 text-center shadow-sm">
+				    <h1 class="page-title mb-4">{{ code_desc }}<br><span class="font-weight-light">{{ doe_desc }}</span></h1>
+				    <div class="mb-4">
+					    {{ msg }}
+				    </div>
+			    </div>
+		    </div><!--//col-->
+	    </div><!--//row-->
+    </div><!--//container-->
+
+
+
+<script>
+
+function redirect() {
+	var url = "{% url 'lobby' %}"
+	var win = window.location.replace(url);
+}
+
+setTimeout(redirect(),600);
+
+</script>
+
+{% endif %}
+{% endblock %}       
+    
+    

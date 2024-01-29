@@ -1,0 +1,29 @@
+
+<script type="text/javascript">
+	function report(reason) {
+		var url = "{% url 'report' %}";
+
+		payload = {
+		    "csrfmiddlewaretoken": "{{ csrf_token }}",
+		    "subject": "",
+		    "subject_id": {{ content.id }},
+		    "reason": reason,
+		};
+		$.ajax({
+			type: 'POST',
+			dataType: "json",
+			url: url,
+			timeout: 5000,
+			data: payload,
+			success: function(data) {
+				//
+			},
+			error: function(data) {
+				//
+			},
+			complete: function(data){
+                alert("Report sent successfully , thank you for making Itranet a better place :)")
+			}
+		});
+	}
+</script>

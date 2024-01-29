@@ -1,0 +1,49 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}
+Create an account
+{% endblock title %}
+
+{% block content %}
+
+<style type="text/css">
+		.bd-placeholder-img {
+		font-size: 1.125rem;
+		text-anchor: middle;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		user-select: none;
+	}
+	@media (min-width: 768px) {
+	.bd-placeholder-img-lg {
+	font-size: 3.5rem;
+		}
+	}
+	.image-container{
+		max-width: 75px;
+		height: auto;
+	}
+
+</style>
+
+
+<div class="container-fluid mb-5">
+	<header class="pt-5">
+	    <div class="container px-5">
+	        <div class="row justify-content-center">
+	            <div class="col-lg-12 col-xxl-12">
+	                <div class="text-center mt-2">
+	                    <h1 class="display-5 page-title fw-bolder text-center tillium  bold pt-2">Do you want to setup your profile and settings? highly recommend you do it</h1>
+	                    <p class="lead fw-normal text-muted mb-0 pb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+
+	                    <p class="text-center py-3"><a class="" href="{% url 'account:setup_profile' %}"><button class="btn app-btn-primary btn-md">Yes</button></a>
+	                    <a class="" href="{% url 'account:details' subject_username=request.user.username %}"><button class="btn app-btn-secondary btn-md">Later</button></a></p>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</header>
+</div>
+
+{% endblock content %}

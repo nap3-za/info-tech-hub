@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Authenticate to continue
+{% endblock title %}
+
+{% block content %}
+
+<style type="text/css">
+		.bd-placeholder-img {
+		font-size: 1.125rem;
+		text-anchor: middle;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		user-select: none;
+	}
+	@media (min-width: 768px) {
+	.bd-placeholder-img-lg {
+	font-size: 3.5rem;
+		}
+	}
+	.image-container{
+		max-width: 75px;
+		height: auto;
+	}
+
+</style>
+
+<div class="row mt-3 mb-3 justify-content-center">
+	<div class="col-md-8">
+		<div class="container-fluid px-4 py-4">
+			<form method="POST">{% csrf_token %}
+				<h1 class="h4 fw-normal page-title text-center tillium bold pt-4">Complete the form to continue</h1>
+				<div class="image-container mx-auto mb-4">
+					<img class="d-block  img-fluid mx-auto profile-image" alt="Info Tech Hub logo" src="{% static 'logos/light.svg' %}" id="id_profile_image">
+				</div>
+				<div class="form-floating">
+					<input placeholder="Email"  class="form-control" type="email" name="email" maxlength="254" autofocus="" required="" id="id_email">
+					<label for="floatingInput">Email address</label>
+				</div>
+
+				<div class="form-floating mb-3">
+					<input placeholder="Passphrase"  class="form-control" type="text" name="passphrase" maxlength="255" required="" id="id_passphrase">
+					<label for="floatingInput">Passphrase (if you didn't set it up enter your password)</label>
+				</div>
+				{% for error in errors %}
+				<p style="color:red">{{ error }}</p>
+				{% endfor %}
+
+				{% for field in form %}
+				<p>
+				{% for error in field.errors %}
+				<p style="color: red">{{ error }}</p>
+				{% endfor %}
+				</p>
+				{% endfor %}
+				{% if form.non_field_errors %}
+				<div style="color: red">
+				<p>{{form.non_field_errors}}</p>
+				</div>
+				{% endif %}
+
+				<p class="text-center"><button class="btn btn-secondary" type="submit">Submit</button></p>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

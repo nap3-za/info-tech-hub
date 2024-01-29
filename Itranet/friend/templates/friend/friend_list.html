@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+User search
+{% endblock title %}
+
+{% block content %}
+<style type="text/css">
+	.profile-image{
+		max-height: 100px;
+		max-width: 100px;
+	}
+	.profile-image{
+		border-radius: 12px;
+	}
+	.card{
+		border-radius: 12px;
+	}
+	.friends-text{
+		color: #000;
+		font-weight: 500;
+	}
+	.friends-text-container{
+		border: 1px solid #cccccc;
+		border-radius: 12px;
+	}
+	.friends-btn:hover {
+		background-color: #bfbfbf;
+		border-color: #bfbfbf;
+	}
+	.dropdown-toggle::after { 
+		content: none; 
+	}
+	.profile-link{
+		color: #000;
+	}
+	.checkmark-icon{
+		color: green;
+	}
+	.cancel-icon{
+		color: red;
+	}
+</style>
+
+<div class="container">
+	<div class="card p-2">
+        <form class="mb-4" onsubmit="return executeQuery();">
+          <input id="id_search_user2" type="search" class="form-control border-secondary" placeholder="Search friends ( under construction )..." aria-label="Search">
+        </form>
+		{% if friends %}
+			<div class="d-flex flex-row flex-wrap">
+			{% for friend in friends %}
+				<div class="card flex-row flex-grow-1 p-2 mx-2 my-2 align-items-center">
+					<a class="profile-link" href="{% url 'account:details' subject_username=friend.0.username %}">
+						<div class="card-image m-2">
+							<img class="card-image profile-image" src="{{ friend.0.profile_image.url }}" alt="">
+						</div>
+					</a>
+					
+					<div class="card-center px-2">
+						<a class="profile-link" href="{% url 'account:details' subject_username=friend.0.username %}">
+							<h4 class="card-title">{{friend.0.username|truncatechars:50}}</h4>
+						</a>
+						{% if friend.1 %}
+							<a href="#" onclick="createOrReturnPrivateChat('{{friend.0.id}}')">Send a Message</a>
+						{% endif %}
+						
+					</div>
+					
+					<div class="d-flex flex-row card-right flex-grow-1 justify-content-end mx-2">
+						{% if friend.1 %}
+							<div class="d-flex flex-row friends-text-container p-3">
+								<p class="friends-text m-auto">
+									Friends 
+								</p>
+							</div>
+						{% else %}
+							{% if friend.0 !=  request.user %}
+								<div class="d-flex flex-row friends-text-container p-3">
+									<p class="friends-text m-auto">
+										Not Friends 
+									</p>
+								</div>
+							{% endif %}
+						{% endif %}
+						{% if friend.0 == request.user %}
+							<div class="d-flex flex-row friends-text-container p-3">
+								<p class="friends-text m-auto">
+									This is you 
+								</p>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+				{% if forloop.counter|divisibleby:2 %}
+					</div><div class="d-flex flex-row flex-wrap">
+				{% endif %}
+				
+			{% endfor %}
+			
+		{% else %} <!-- If no friends -->
+			<div class="d-flex flex-row flex-grow-1 justify-content-center align-items-center p-4">
+				<p>No friends :(</p>
+			</div>
+		{% endif %}
+
+    </div>	
+</div>
+
+
+<!-- <script type="text/javascript">
+  function executeQuery() {
+    var query = ""
+    query = document.getElementById('id_search_user2').value;
+      window.location.replace("{% url 'account:user_search' %}?q=" + query)
+      return false
+  }
+</script> -->
+
+{% endblock content %}
